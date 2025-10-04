@@ -217,6 +217,17 @@ DATABASE_URL=postgresql://user:password@localhost/devis_menuiserie
 
 ## 🖥️ Déploiement VPS / Serveur Linux
 
+### 🚀 Installation rapide avec script automatique
+
+```bash
+# Télécharger et exécuter le script d'installation
+curl -O https://raw.githubusercontent.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2/main/deploy-vps.sh
+chmod +x deploy-vps.sh
+sudo ./deploy-vps.sh
+```
+
+Le script installe automatiquement toutes les dépendances et configure l'application.
+
 ### Installation complète (Ubuntu/Debian)
 
 ```bash
@@ -335,6 +346,17 @@ sudo certbot --nginx -d votre-domaine.com
 ```
 
 ## 🪟 Déploiement Windows Server
+
+### 🚀 Installation rapide avec script automatique
+
+```powershell
+# Ouvrir PowerShell en tant qu'Administrateur, puis :
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2/main/deploy-windows-server.ps1" -OutFile "deploy-windows-server.ps1"
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
+.\deploy-windows-server.ps1
+```
+
+Le script installe automatiquement toutes les dépendances et configure l'application.
 
 ### Installation sur Windows Server 2016/2019/2022
 
