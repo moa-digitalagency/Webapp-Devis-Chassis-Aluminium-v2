@@ -65,40 +65,36 @@ Une Progressive Web App (PWA) multi-tenant SaaS pour la génération de devis de
 
 ## 🚀 Installation locale (Windows)
 
-### Installation automatique en une commande
+### Méthode rapide avec winget
 
 Ouvrez **PowerShell** et exécutez :
 
 ```powershell
-# Installer Python 3.11
-winget install --id Python.Python.3.11 -e
+# Installer Python 3.11 et Git
+winget install Python.Python.3.11 Git.Git
 
-# Installer Git
-winget install --id Git.Git -e
-
-# Redémarrer le terminal pour charger les nouvelles variables d'environnement, puis :
-
-# Cloner le projet
+# Redémarrer le terminal, puis :
 git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
 cd Webapp-Devis-Chassis-Aluminium
-
-# Autoriser l'exécution de scripts PowerShell
-Set-ExecutionPolicy -Scope CurrentUser RemoteSigned -Force
-
-# Créer un environnement virtuel
 python -m venv .venv
-# Si la commande ci-dessus ne fonctionne pas, essayez :
-# py -3.11 -m venv .venv
-
-# Activer l'environnement virtuel
 .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python main.py
+```
 
-# Mettre à jour pip et installer les dépendances
-python -m pip install -U pip wheel
-python -m pip install -r requirements.txt
+### Méthode manuelle
 
-# Lancer l'application (la base de données sera créée automatiquement)
-python .\main.py
+1. **Installer Python 3.11+** : [python.org/downloads](https://www.python.org/downloads/)
+2. **Installer Git** : [git-scm.com](https://git-scm.com/download/win)
+3. **Cloner et démarrer** :
+
+```powershell
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
+cd Webapp-Devis-Chassis-Aluminium
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python main.py
 ```
 
 ### ✅ Accès à l'application
@@ -109,52 +105,91 @@ Une fois démarrée, l'application est accessible à : **http://localhost:5000**
 - Nom d'utilisateur : `superadmin`
 - Mot de passe : `admin123`
 
-> ⚠️ **Important** : Changez ce mot de passe après votre première connexion pour des raisons de sécurité !
+> ⚠️ **Important** : Changez ce mot de passe après votre première connexion !
 
-### 📝 Configuration optionnelle
+## 🚀 Installation locale (Linux)
 
-Pour personnaliser la configuration (SendGrid, clé secrète, etc.), copiez `.env.example` vers `.env` :
-
-```powershell
-copy .env.example .env
-```
-
-Puis éditez `.env` avec vos valeurs :
-```env
-SECRET_KEY=votre-cle-secrete-personnalisee
-SENDGRID_API_KEY=votre-cle-api-sendgrid
-SENDGRID_FROM_EMAIL=noreply@votredomaine.com
-```
-
-### 🔄 Arrêt et redémarrage
-
-Pour arrêter l'application : appuyez sur `Ctrl+C` dans le terminal.
-
-Pour redémarrer l'application :
-```powershell
-cd Webapp-Devis-Chassis-Aluminium
-.\.venv\Scripts\Activate.ps1
-python .\main.py
-```
-
-## 🚀 Installation locale (Linux/Mac)
+### Ubuntu / Debian
 
 ```bash
+# Installer les dépendances système
+sudo apt update
+sudo apt install -y python3 python3-venv python3-pip git
+
+# Si vous avez besoin de Python 3.11 spécifiquement (optionnel)
+# sudo apt install software-properties-common -y
+# sudo add-apt-repository ppa:deadsnakes/ppa -y
+# sudo apt update
+# sudo apt install python3.11 python3.11-venv -y
+
 # Cloner le projet
 git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
 cd Webapp-Devis-Chassis-Aluminium
 
-# Créer un environnement virtuel
+# Créer l'environnement virtuel (utilisez python3.11 si installé, sinon python3)
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Installer les dépendances
-pip install -U pip wheel
+# Installer les dépendances Python
 pip install -r requirements.txt
 
 # Lancer l'application
 python main.py
 ```
+
+### CentOS / RHEL / Fedora
+
+```bash
+# Installer les dépendances système
+sudo dnf install -y python3 python3-pip git
+
+# Pour Python 3.11 sur RHEL 9/Fedora (optionnel)
+# sudo dnf install python3.11 python3.11-pip -y
+
+# Cloner le projet
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
+cd Webapp-Devis-Chassis-Aluminium
+
+# Créer l'environnement virtuel
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Installer les dépendances Python
+pip install -r requirements.txt
+
+# Lancer l'application
+python main.py
+```
+
+L'application sera accessible sur `http://localhost:5000`
+
+## 🚀 Installation locale (macOS)
+
+### Avec Homebrew (recommandé)
+
+```bash
+# Installer Python 3.11 et Git
+brew install python@3.11 git
+
+# Cloner le projet
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
+cd Webapp-Devis-Chassis-Aluminium
+
+# Créer l'environnement virtuel
+python3.11 -m venv .venv
+source .venv/bin/activate
+
+# Installer les dépendances
+pip install -r requirements.txt
+
+# Lancer l'application
+python main.py
+```
+
+### Sans Homebrew
+
+1. Installer Python 3.11+ depuis [python.org](https://www.python.org/downloads/macos/)
+2. Suivre les mêmes étapes que ci-dessus
 
 L'application sera accessible sur `http://localhost:5000`
 
@@ -169,15 +204,82 @@ L'application sera accessible sur `http://localhost:5000`
 DATABASE_URL=postgresql://user:password@localhost/devis_menuiserie
 ```
 
-## 🖥️ Déploiement sur serveur
+## 🖥️ Déploiement VPS / Serveur Linux
 
-### Avec Gunicorn (recommandé pour production)
+### Installation complète (Ubuntu/Debian)
+
 ```bash
+# 1. Mettre à jour le système
+sudo apt update && sudo apt upgrade -y
+
+# 2. Installer Python 3.11 (si pas déjà installé)
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt update
+
+# 3. Installer les dépendances
+sudo apt install -y python3.11 python3.11-venv python3-pip git nginx postgresql postgresql-contrib
+
+# 4. Créer un utilisateur pour l'application
+sudo useradd -m -s /bin/bash devisapp
+sudo su - devisapp
+
+# 5. Cloner le projet
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
+cd Webapp-Devis-Chassis-Aluminium
+
+# 6. Créer l'environnement virtuel
+python3.11 -m venv .venv
+source .venv/bin/activate
+
+# 7. Installer les dépendances
+pip install -r requirements.txt
 pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 --reuse-port main:app
+
+# 8. Configurer PostgreSQL
+sudo -u postgres psql
+CREATE DATABASE devis_menuiserie;
+CREATE USER devisuser WITH PASSWORD 'votre_mot_de_passe';
+GRANT ALL PRIVILEGES ON DATABASE devis_menuiserie TO devisuser;
+\q
+
+# 9. Créer le fichier .env
+cat > .env << EOF
+DATABASE_URL=postgresql://devisuser:votre_mot_de_passe@localhost/devis_menuiserie
+SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+FLASK_ENV=production
+EOF
+
+# 10. Créer le service systemd
+exit  # Revenir à l'utilisateur root
+
+sudo nano /etc/systemd/system/devisapp.service
 ```
 
-### Configuration Nginx (reverse proxy)
+**Contenu du fichier devisapp.service :**
+
+```ini
+[Unit]
+Description=PWA Devis Menuiserie Application
+After=network.target
+
+[Service]
+User=devisapp
+Group=devisapp
+WorkingDirectory=/home/devisapp/Webapp-Devis-Chassis-Aluminium
+Environment="PATH=/home/devisapp/Webapp-Devis-Chassis-Aluminium/.venv/bin"
+ExecStart=/home/devisapp/Webapp-Devis-Chassis-Aluminium/.venv/bin/gunicorn -w 4 -b 127.0.0.1:5000 --reuse-port main:app
+
+[Install]
+WantedBy=multi-user.target
+```
+
+**Configuration Nginx :**
+
+```bash
+sudo nano /etc/nginx/sites-available/devisapp
+```
+
 ```nginx
 server {
     listen 80;
@@ -188,16 +290,176 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static {
+        alias /home/devisapp/Webapp-Devis-Chassis-Aluminium/app/static;
     }
 }
 ```
 
-### Variables d'environnement production
-```env
+**Activer et démarrer :**
+
+```bash
+# Activer le site Nginx
+sudo ln -s /etc/nginx/sites-available/devisapp /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
+# Démarrer l'application
+sudo systemctl start devisapp
+sudo systemctl enable devisapp
+sudo systemctl status devisapp
+```
+
+### SSL avec Let's Encrypt
+
+```bash
+sudo apt install certbot python3-certbot-nginx
+sudo certbot --nginx -d votre-domaine.com
+```
+
+## 🪟 Déploiement Windows Server
+
+### Installation sur Windows Server 2016/2019/2022
+
+```powershell
+# 1. Installer Python 3.11
+# Télécharger depuis python.org et installer
+
+# 2. Installer Git
+# Télécharger depuis git-scm.com et installer
+
+# 3. Cloner le projet
+cd C:\inetpub
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
+cd Webapp-Devis-Chassis-Aluminium
+
+# 4. Créer l'environnement virtuel
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+
+# 5. Installer les dépendances
+pip install -r requirements.txt
+pip install waitress
+
+# 6. Créer le fichier .env
+@"
+SECRET_KEY=votre-cle-secrete-unique
+DATABASE_URL=sqlite:///devis_menuiserie.db
 FLASK_ENV=production
-DATABASE_URL=postgresql://user:password@db-host/devis_prod
-SECRET_KEY=clé-secrète-production
-ENCRYPTION_KEY=clé-chiffrement-production
+"@ | Out-File -FilePath .env -Encoding utf8
+
+# 7. Créer un service Windows avec NSSM
+# Télécharger NSSM depuis nssm.cc
+nssm install DevisApp "C:\inetpub\Webapp-Devis-Chassis-Aluminium\.venv\Scripts\python.exe"
+nssm set DevisApp AppParameters "-m waitress --port=5000 main:app"
+nssm set DevisApp AppDirectory "C:\inetpub\Webapp-Devis-Chassis-Aluminium"
+nssm set DevisApp DisplayName "PWA Devis Menuiserie"
+nssm set DevisApp Description "Application de devis menuiserie aluminium"
+nssm set DevisApp Start SERVICE_AUTO_START
+
+# 8. Démarrer le service
+nssm start DevisApp
+```
+
+### Configuration IIS comme reverse proxy
+
+1. Installer le module **URL Rewrite** et **Application Request Routing**
+2. Configurer le reverse proxy vers `http://localhost:5000`
+
+## 🌐 Déploiement sur cPanel
+
+### Prérequis
+- Accès SSH au serveur
+- Python 3.11+ installé (via Python Selector ou Setup Python App)
+- Accès à la base de données MySQL ou PostgreSQL
+
+### Installation via SSH
+
+```bash
+# 1. Se connecter en SSH
+ssh votre_user@votre-serveur.com
+
+# 2. Aller dans le répertoire public_html ou créer un sous-domaine
+cd ~/public_html  # ou cd ~/subdomains/app/public_html
+
+# 3. Cloner le projet
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
+cd Webapp-Devis-Chassis-Aluminium
+
+# 4. Créer l'environnement virtuel (via cPanel Python App ou manuellement)
+virtualenv --python=python3.11 venv
+source venv/bin/activate
+
+# 5. Installer les dépendances
+pip install -r requirements.txt
+pip install gunicorn
+
+# 6. Configurer la base de données via cPanel
+# Créer une base MySQL ou PostgreSQL dans cPanel
+
+# 7. Créer le fichier .env
+cat > .env << EOF
+DATABASE_URL=mysql://user:password@localhost/database_name
+SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
+FLASK_ENV=production
+EOF
+
+# 8. Créer le fichier passenger_wsgi.py
+cat > passenger_wsgi.py << 'EOF'
+import sys
+import os
+
+# Ajouter le chemin de l'application
+INTERP = os.path.join(os.environ['HOME'], 'public_html', 'Webapp-Devis-Chassis-Aluminium', 'venv', 'bin', 'python3')
+if sys.executable != INTERP:
+    os.execl(INTERP, INTERP, *sys.argv)
+
+sys.path.insert(0, os.path.dirname(__file__))
+
+# Charger les variables d'environnement
+from dotenv import load_dotenv
+load_dotenv(os.path.join(os.path.dirname(__file__), '.env'))
+
+# Importer l'application Flask
+from main import app as application
+EOF
+```
+
+### Configuration dans cPanel
+
+1. **Setup Python App** (si disponible) :
+   - Application root : `/home/user/public_html/Webapp-Devis-Chassis-Aluminium`
+   - Application URL : `/` ou votre sous-domaine
+   - Python version : 3.11
+   - Application startup file : `passenger_wsgi.py`
+
+2. **Fichier .htaccess** (si nécessaire) :
+
+```apache
+# Créer dans public_html
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /Webapp-Devis-Chassis-Aluminium/passenger_wsgi.py/$1 [QSA,L]
+```
+
+3. **Redémarrer l'application** via cPanel Python App
+
+### Variables d'environnement recommandées
+
+```env
+# Production
+FLASK_ENV=production
+SECRET_KEY=votre-cle-secrete-tres-longue-et-unique
+DATABASE_URL=postgresql://user:password@localhost/devis_prod
+ENCRYPTION_KEY=votre-cle-chiffrement-unique
+
+# Email (optionnel)
+SENDGRID_API_KEY=votre-cle-sendgrid
+SENDGRID_FROM_EMAIL=noreply@votredomaine.com
 ```
 
 ## 🔌 API Endpoints
