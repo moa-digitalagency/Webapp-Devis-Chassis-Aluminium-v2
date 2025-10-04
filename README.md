@@ -217,6 +217,24 @@ DATABASE_URL=postgresql://user:password@localhost/devis_menuiserie
 
 ## 🖥️ Déploiement VPS / Serveur Linux
 
+### ⚡ Installation ULTRA-RAPIDE (Recommandé)
+
+**Installation complète en 1 commande** - Configure tout automatiquement (PostgreSQL, Nginx, SSL) :
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2/main/install-vps.sh | sudo bash
+```
+
+Ce script configure automatiquement :
+- ✅ Python 3.11 + PostgreSQL + Nginx
+- ✅ Base de données + Service systemd
+- ✅ SSL/HTTPS avec Let's Encrypt
+- ✅ Démarrage automatique au boot
+
+Temps d'installation : **~5 minutes**
+
+📖 Voir [INSTALLATION-VPS.md](INSTALLATION-VPS.md) pour plus de détails
+
 ### 🚀 Installation rapide avec script automatique
 
 ```bash
