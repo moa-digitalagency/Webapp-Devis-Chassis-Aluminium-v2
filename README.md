@@ -78,6 +78,7 @@ git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
 cd Webapp-Devis-Chassis-Aluminium-v2
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+python -m pip install -U pip wheel setuptools
 pip install -r requirements.txt
 python main.py
 ```
@@ -93,6 +94,7 @@ git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
 cd Webapp-Devis-Chassis-Aluminium-v2
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+python -m pip install -U pip wheel setuptools
 pip install -r requirements.txt
 python main.py
 ```
@@ -130,6 +132,9 @@ cd Webapp-Devis-Chassis-Aluminium-v2
 python3 -m venv .venv
 source .venv/bin/activate
 
+# Mettre à jour pip et installer les outils de base
+python -m pip install -U pip wheel setuptools
+
 # Installer les dépendances Python
 pip install -r requirements.txt
 
@@ -153,6 +158,9 @@ cd Webapp-Devis-Chassis-Aluminium-v2
 # Créer l'environnement virtuel
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Mettre à jour pip et installer les outils de base
+python -m pip install -U pip wheel setuptools
 
 # Installer les dépendances Python
 pip install -r requirements.txt
@@ -178,6 +186,9 @@ cd Webapp-Devis-Chassis-Aluminium-v2
 # Créer l'environnement virtuel
 python3.11 -m venv .venv
 source .venv/bin/activate
+
+# Mettre à jour pip et installer les outils de base
+python -m pip install -U pip wheel setuptools
 
 # Installer les dépendances
 pip install -r requirements.txt
@@ -232,25 +243,28 @@ cd Webapp-Devis-Chassis-Aluminium-v2
 python3.11 -m venv .venv
 source .venv/bin/activate
 
-# 7. Installer les dépendances
+# 7. Mettre à jour pip et installer les outils de base
+python -m pip install -U pip wheel setuptools
+
+# 8. Installer les dépendances
 pip install -r requirements.txt
 pip install gunicorn
 
-# 8. Configurer PostgreSQL
+# 9. Configurer PostgreSQL
 sudo -u postgres psql
 CREATE DATABASE devis_menuiserie;
 CREATE USER devisuser WITH PASSWORD 'votre_mot_de_passe';
 GRANT ALL PRIVILEGES ON DATABASE devis_menuiserie TO devisuser;
 \q
 
-# 9. Créer le fichier .env
+# 10. Créer le fichier .env
 cat > .env << EOF
 DATABASE_URL=postgresql://devisuser:votre_mot_de_passe@localhost/devis_menuiserie
 SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
 FLASK_ENV=production
 EOF
 
-# 10. Créer le service systemd
+# 11. Créer le service systemd
 exit  # Revenir à l'utilisateur root
 
 sudo nano /etc/systemd/system/devisapp.service
@@ -340,18 +354,21 @@ cd Webapp-Devis-Chassis-Aluminium-v2
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 
-# 5. Installer les dépendances
+# 5. Mettre à jour pip et installer les outils de base
+python -m pip install -U pip wheel setuptools
+
+# 6. Installer les dépendances
 pip install -r requirements.txt
 pip install waitress
 
-# 6. Créer le fichier .env
+# 7. Créer le fichier .env
 @"
 SECRET_KEY=votre-cle-secrete-unique
 DATABASE_URL=sqlite:///devis_menuiserie.db
 FLASK_ENV=production
 "@ | Out-File -FilePath .env -Encoding utf8
 
-# 7. Créer un service Windows avec NSSM
+# 8. Créer un service Windows avec NSSM
 # Télécharger NSSM depuis nssm.cc
 nssm install DevisApp "C:\inetpub\Webapp-Devis-Chassis-Aluminium-v2\.venv\Scripts\python.exe"
 nssm set DevisApp AppParameters "-m waitress --port=5000 main:app"
@@ -360,7 +377,7 @@ nssm set DevisApp DisplayName "PWA Devis Menuiserie"
 nssm set DevisApp Description "Application de devis menuiserie aluminium"
 nssm set DevisApp Start SERVICE_AUTO_START
 
-# 8. Démarrer le service
+# 9. Démarrer le service
 nssm start DevisApp
 ```
 
@@ -393,21 +410,24 @@ cd Webapp-Devis-Chassis-Aluminium-v2
 virtualenv --python=python3.11 venv
 source venv/bin/activate
 
-# 5. Installer les dépendances
+# 5. Mettre à jour pip et installer les outils de base
+python -m pip install -U pip wheel setuptools
+
+# 6. Installer les dépendances
 pip install -r requirements.txt
 pip install gunicorn
 
-# 6. Configurer la base de données via cPanel
+# 7. Configurer la base de données via cPanel
 # Créer une base MySQL ou PostgreSQL dans cPanel
 
-# 7. Créer le fichier .env
+# 8. Créer le fichier .env
 cat > .env << EOF
 DATABASE_URL=mysql://user:password@localhost/database_name
 SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_hex(32))')
 FLASK_ENV=production
 EOF
 
-# 8. Créer le fichier passenger_wsgi.py
+# 9. Créer le fichier passenger_wsgi.py
 cat > passenger_wsgi.py << 'EOF'
 import sys
 import os
