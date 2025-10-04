@@ -63,7 +63,7 @@ Une Progressive Web App (PWA) multi-tenant SaaS pour la génération de devis de
 - SQLite (inclus avec Python) ou PostgreSQL 13+ (optionnel pour production)
 - Compte SendGrid (optionnel - pour l'envoi d'emails)
 
-## 🚀 Installation locale (Windows)
+## 🚀 Installation locale (Windows 10/11)
 
 ### Méthode rapide avec winget
 
