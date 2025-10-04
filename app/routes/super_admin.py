@@ -5,6 +5,8 @@ from app.routes.auth import super_admin_required, login_required
 from datetime import datetime
 from werkzeug.security import generate_password_hash
 from app.crypto_utils import encrypt_data, decrypt_data
+from app.services.backup import BackupService
+from app.services.updater import UpdateService
 
 def copy_catalog_to_company(company_id):
     """Copy template catalog (company_id=NULL) to a new company"""
@@ -366,3 +368,124 @@ def get_activity_logs():
         'pages': logs.pages,
         'current_page': page
     })
+
+# Backup routes
+@bp.route('/backup/create', methods=['POST'])
+@super_admin_required
+def create_backup():
+    try:
+        data = request.get_json() or {}
+        description = data.get('description', 'Backup manuel')
+        
+        backup_service = BackupService()
+        result = backup_service.create_backup(description=description)
+        
+        log_activity('backup_created', f'Created backup: {result["backup_file"]}')
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/backup/list', methods=['GET'])
+@super_admin_required
+def list_backups():
+    try:
+        backup_service = BackupService()
+        backups = backup_service.list_backups()
+        stats = backup_service.get_backup_stats()
+        
+        return jsonify({
+            'success': True,
+            'backups': backups,
+            'stats': stats
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/backup/restore', methods=['POST'])
+@super_admin_required
+def restore_backup():
+    try:
+        data = request.get_json()
+        backup_file = data.get('backup_file')
+        
+        if not backup_file:
+            return jsonify({'success': False, 'error': 'backup_file required'}), 400
+        
+        backup_service = BackupService()
+        result = backup_service.restore_backup(backup_file)
+        
+        log_activity('backup_restored', f'Restored backup: {backup_file}')
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+# Update routes
+@bp.route('/update/check', methods=['GET'])
+@super_admin_required
+def check_updates():
+    try:
+        update_service = UpdateService()
+        result = update_service.check_for_updates()
+        version = update_service.get_current_version()
+        
+        return jsonify({
+            **result,
+            'current_version': version
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/update/perform', methods=['POST'])
+@super_admin_required
+def perform_update():
+    try:
+        data = request.get_json() or {}
+        auto_backup = data.get('auto_backup', True)
+        auto_migrate = data.get('auto_migrate', True)
+        
+        update_service = UpdateService()
+        result = update_service.perform_update(
+            auto_backup=auto_backup,
+            auto_migrate=auto_migrate
+        )
+        
+        log_activity('system_updated', 'System updated from GitHub')
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/update/history', methods=['GET'])
+@super_admin_required
+def update_history():
+    try:
+        update_service = UpdateService()
+        history = update_service.get_update_history()
+        
+        return jsonify({
+            'success': True,
+            'history': history
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+@bp.route('/update/rollback', methods=['POST'])
+@super_admin_required
+def rollback_update():
+    try:
+        data = request.get_json()
+        commit_hash = data.get('commit_hash')
+        
+        if not commit_hash:
+            return jsonify({'success': False, 'error': 'commit_hash required'}), 400
+        
+        update_service = UpdateService()
+        result = update_service.rollback_update(commit_hash)
+        
+        log_activity('system_rollback', f'System rolled back to {commit_hash}')
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500

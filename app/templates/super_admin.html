@@ -61,6 +61,14 @@
                     <span class="nav-icon">📋</span>
                     <span class="nav-text">Logs d'Activité</span>
                 </div>
+                <div class="nav-item" data-section="backup">
+                    <span class="nav-icon">💾</span>
+                    <span class="nav-text">Sauvegardes</span>
+                </div>
+                <div class="nav-item" data-section="update">
+                    <span class="nav-icon">🔄</span>
+                    <span class="nav-text">Mise à jour</span>
+                </div>
             </nav>
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -206,6 +214,107 @@
                     <button class="btn-secondary" id="prevPage" disabled>← Précédent</button>
                     <span id="pageInfo">Page 1</span>
                     <button class="btn-secondary" id="nextPage">Suivant →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup Section -->
+        <div id="section-backup" class="sidebar-section">
+            <div class="sidebar-section-content">
+                <div class="sidebar-header">
+                    <h2>💾 Sauvegardes</h2>
+                    <button class="close-btn" onclick="closeSidebarSection()">✕</button>
+                </div>
+                
+                <div class="settings-form">
+                    <div class="stat-card stat-blue" style="margin-bottom: 1.5rem;">
+                        <h4>📊 Statistiques</h4>
+                        <div id="backupStats" style="margin-top: 1rem;">
+                            <p>Chargement...</p>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="margin-bottom: 1.5rem;">
+                        <button class="btn-primary" id="createBackupBtn">💾 Créer une sauvegarde</button>
+                        <button class="btn-secondary" id="refreshBackupsBtn">🔄 Actualiser</button>
+                    </div>
+
+                    <h4 style="margin-bottom: 1rem;">📋 Historique des sauvegardes</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date/Heure</th>
+                                    <th>Description</th>
+                                    <th>Type BD</th>
+                                    <th>Taille</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="backupsTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center;">Chargement...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Section -->
+        <div id="section-update" class="sidebar-section">
+            <div class="sidebar-section-content">
+                <div class="sidebar-header">
+                    <h2>🔄 Mise à jour</h2>
+                    <button class="close-btn" onclick="closeSidebarSection()">✕</button>
+                </div>
+                
+                <div class="settings-form">
+                    <div class="stat-card stat-green" style="margin-bottom: 1.5rem;">
+                        <h4>📦 Version actuelle</h4>
+                        <div id="currentVersion" style="margin-top: 1rem;">
+                            <p>Chargement...</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-orange" style="margin-bottom: 1.5rem;">
+                        <h4>🔍 Vérification des mises à jour</h4>
+                        <div id="updateStatus" style="margin-top: 1rem;">
+                            <p>Cliquez sur "Vérifier" pour rechercher des mises à jour</p>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="margin-bottom: 1.5rem;">
+                        <button class="btn-secondary" id="checkUpdatesBtn">🔍 Vérifier les mises à jour</button>
+                        <button class="btn-primary" id="performUpdateBtn" style="display: none;">⬇️ Mettre à jour maintenant</button>
+                    </div>
+
+                    <div style="background: #FFF3CD; border: 1px solid #FFC107; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+                        <p style="margin: 0; color: #856404; font-size: 14px;">
+                            ⚠️ <strong>Important:</strong> Une sauvegarde automatique sera créée avant la mise à jour. Les migrations de base de données seront appliquées automatiquement.
+                        </p>
+                    </div>
+
+                    <h4 style="margin-bottom: 1rem;">📋 Historique des mises à jour</h4>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date/Heure</th>
+                                    <th>Statut</th>
+                                    <th>Étapes</th>
+                                    <th>Message</th>
+                                </tr>
+                            </thead>
+                            <tbody id="updateHistoryTableBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">Aucune mise à jour effectuée</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

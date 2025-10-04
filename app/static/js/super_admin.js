@@ -626,6 +626,255 @@ if (uploadLanguageBtn) {
     });
 }
 
+// ===== Backup Functions =====
+async function loadBackups() {
+    try {
+        const response = await fetch('/api/super-admin/backup/list', { credentials: 'include' });
+        const data = await response.json();
+        
+        if (data.success) {
+            renderBackupStats(data.stats);
+            renderBackupsTable(data.backups);
+        }
+    } catch (error) {
+        console.error('Error loading backups:', error);
+    }
+}
+
+function renderBackupStats(stats) {
+    const statsDiv = document.getElementById('backupStats');
+    statsDiv.innerHTML = `
+        <p><strong>Total sauvegardes:</strong> ${stats.total_backups}</p>
+        <p><strong>Réussies:</strong> <span style="color: #10B981;">${stats.successful}</span></p>
+        <p><strong>Échouées:</strong> <span style="color: #EF4444;">${stats.failed}</span></p>
+        <p><strong>Taille totale:</strong> ${stats.total_size_mb} MB</p>
+        ${stats.latest_backup ? `<p><strong>Dernière sauvegarde:</strong> ${new Date(stats.latest_backup.datetime).toLocaleString()}</p>` : ''}
+    `;
+}
+
+function renderBackupsTable(backups) {
+    const tbody = document.getElementById('backupsTableBody');
+    
+    if (backups.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Aucune sauvegarde</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = backups.map(backup => `
+        <tr>
+            <td>${new Date(backup.datetime).toLocaleString()}</td>
+            <td>${backup.description || 'N/A'}</td>
+            <td>${backup.database_type || 'N/A'}</td>
+            <td>${backup.size ? (backup.size / 1024 / 1024).toFixed(2) + ' MB' : 'N/A'}</td>
+            <td>${backup.success ? '<span style="color: #10B981;">✓ Réussie</span>' : '<span style="color: #EF4444;">✗ Échouée</span>'}</td>
+            <td>
+                ${backup.success ? `<button class="btn-secondary" onclick="restoreBackup('${backup.files[0]}')">♻️ Restaurer</button>` : ''}
+            </td>
+        </tr>
+    `).join('');
+}
+
+async function createBackup() {
+    const description = prompt('Description de cette sauvegarde (optionnel):', 'Backup manuel');
+    if (description === null) return;
+    
+    try {
+        const createBtn = document.getElementById('createBackupBtn');
+        createBtn.disabled = true;
+        createBtn.textContent = '⏳ Création...';
+        
+        const response = await fetch('/api/super-admin/backup/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description }),
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Sauvegarde créée avec succès!');
+            await loadBackups();
+        } else {
+            alert('❌ Erreur: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error creating backup:', error);
+        alert('❌ Erreur lors de la création de la sauvegarde');
+    } finally {
+        const createBtn = document.getElementById('createBackupBtn');
+        createBtn.disabled = false;
+        createBtn.textContent = '💾 Créer une sauvegarde';
+    }
+}
+
+async function restoreBackup(backupFile) {
+    if (!confirm('⚠️ ATTENTION: Cette opération va restaurer la base de données. Une sauvegarde sera créée avant. Continuer?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/super-admin/backup/restore', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ backup_file: backupFile }),
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Base de données restaurée avec succès! Rechargez la page.');
+            location.reload();
+        } else {
+            alert('❌ Erreur: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error restoring backup:', error);
+        alert('❌ Erreur lors de la restauration');
+    }
+}
+
+// ===== Update Functions =====
+async function checkForUpdates() {
+    try {
+        const checkBtn = document.getElementById('checkUpdatesBtn');
+        checkBtn.disabled = true;
+        checkBtn.textContent = '⏳ Vérification...';
+        
+        const response = await fetch('/api/super-admin/update/check', { credentials: 'include' });
+        const data = await response.json();
+        
+        const statusDiv = document.getElementById('updateStatus');
+        const updateBtn = document.getElementById('performUpdateBtn');
+        
+        if (data.success) {
+            const version = data.current_version;
+            document.getElementById('currentVersion').innerHTML = `
+                <p><strong>Commit:</strong> ${version.commit}</p>
+                <p><strong>Date:</strong> ${version.date}</p>
+                <p><strong>Message:</strong> ${version.message}</p>
+                <p><strong>Branche:</strong> ${version.branch}</p>
+            `;
+            
+            if (data.updates_available) {
+                statusDiv.innerHTML = `
+                    <p style="color: #F59E0B;"><strong>🆕 Mises à jour disponibles!</strong></p>
+                    <p>Commits en retard: ${data.commits_behind}</p>
+                    <p>Dernier commit: ${data.latest_commit}</p>
+                `;
+                updateBtn.style.display = 'inline-block';
+            } else {
+                statusDiv.innerHTML = `
+                    <p style="color: #10B981;"><strong>✅ Vous êtes à jour!</strong></p>
+                    <p>Aucune mise à jour disponible</p>
+                `;
+                updateBtn.style.display = 'none';
+            }
+        } else {
+            statusDiv.innerHTML = `<p style="color: #EF4444;">❌ ${data.error}</p>`;
+        }
+    } catch (error) {
+        console.error('Error checking updates:', error);
+        document.getElementById('updateStatus').innerHTML = '<p style="color: #EF4444;">❌ Erreur de vérification</p>';
+    } finally {
+        const checkBtn = document.getElementById('checkUpdatesBtn');
+        checkBtn.disabled = false;
+        checkBtn.textContent = '🔍 Vérifier les mises à jour';
+    }
+}
+
+async function performUpdate() {
+    if (!confirm('⚠️ ATTENTION: Cette opération va mettre à jour l\'application. Une sauvegarde sera créée automatiquement. Continuer?')) {
+        return;
+    }
+    
+    try {
+        const updateBtn = document.getElementById('performUpdateBtn');
+        updateBtn.disabled = true;
+        updateBtn.textContent = '⏳ Mise à jour en cours...';
+        
+        const response = await fetch('/api/super-admin/update/perform', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                auto_backup: true,
+                auto_migrate: true
+            }),
+            credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('✅ Mise à jour réussie! L\'application va redémarrer.');
+            location.reload();
+        } else {
+            alert('❌ Erreur: ' + data.error);
+            updateBtn.disabled = false;
+            updateBtn.textContent = '⬇️ Mettre à jour maintenant';
+        }
+    } catch (error) {
+        console.error('Error performing update:', error);
+        alert('❌ Erreur lors de la mise à jour');
+    }
+}
+
+async function loadUpdateHistory() {
+    try {
+        const response = await fetch('/api/super-admin/update/history', { credentials: 'include' });
+        const data = await response.json();
+        
+        if (data.success) {
+            renderUpdateHistory(data.history);
+        }
+    } catch (error) {
+        console.error('Error loading update history:', error);
+    }
+}
+
+function renderUpdateHistory(history) {
+    const tbody = document.getElementById('updateHistoryTableBody');
+    
+    if (history.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Aucune mise à jour effectuée</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = history.map(update => `
+        <tr>
+            <td>${new Date(update.timestamp).toLocaleString()}</td>
+            <td>${update.success ? '<span style="color: #10B981;">✓ Réussie</span>' : '<span style="color: #EF4444;">✗ Échouée</span>'}</td>
+            <td>${update.steps ? update.steps.length : 0} étapes</td>
+            <td>${update.message || update.error || 'N/A'}</td>
+        </tr>
+    `).join('');
+}
+
+// Event listeners for backup and update
+if (document.getElementById('createBackupBtn')) {
+    document.getElementById('createBackupBtn').addEventListener('click', createBackup);
+    document.getElementById('refreshBackupsBtn').addEventListener('click', loadBackups);
+}
+
+if (document.getElementById('checkUpdatesBtn')) {
+    document.getElementById('checkUpdatesBtn').addEventListener('click', checkForUpdates);
+    document.getElementById('performUpdateBtn').addEventListener('click', performUpdate);
+}
+
+// Override sidebar section opening to load data
+const originalOpenSidebarSection = window.openSidebarSection;
+window.openSidebarSection = function(sectionId) {
+    originalOpenSidebarSection(sectionId);
+    
+    if (sectionId === 'backup') {
+        loadBackups();
+    } else if (sectionId === 'update') {
+        checkForUpdates();
+        loadUpdateHistory();
+    }
+};
+
 async function init() {
     if (await checkAuth()) {
         await Promise.all([

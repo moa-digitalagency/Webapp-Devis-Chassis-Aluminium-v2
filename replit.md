@@ -29,6 +29,24 @@ The application uses an Application Factory pattern with Flask and modular bluep
 -   **Offline Functionality**: All CSS/JS files are local, and a Service Worker provides full offline PWA functionality.
 -   **CSS Build System**: Uses Tailwind CSS v4 standalone binary with pure CSS configuration. **100% Python stack - no Node.js or npm required**. Tailwind builds via `./tailwindcss` binary with CSS-based config in `tailwind-input.css`.
 -   **Internationalization (i18n)**: Multi-language support via JSON translation files. Default languages: French (fr) and English (en). Super admins can upload new language files via the admin interface. Languages are stored in `app/locales/` and automatically scanned at startup. API endpoints: `/api/languages/available`, `/api/languages/current`, `/api/languages/set`, `/api/languages/upload`. Frontend includes a language switcher and translation system (`i18n.js`).
+-   **Backup System**: Automated and manual database backup functionality for both SQLite and PostgreSQL. Features include:
+    -   **Manual Backup**: Super admins can create backups on-demand via the dashboard
+    -   **Auto Backup**: Automatic backup before system updates
+    -   **Backup Catalog**: Tracks all backups with metadata (timestamp, size, description, status)
+    -   **Restore Capability**: Restore from any successful backup
+    -   **Storage Management**: Automatic cleanup (keeps last 10 backups by default)
+    -   Service located in `app/services/backup.py`
+    -   API endpoints: `/api/super-admin/backup/create`, `/api/super-admin/backup/list`, `/api/super-admin/backup/restore`
+-   **GitHub Update System**: Automated application updates from GitHub repository with database migration support. Features include:
+    -   **Update Detection**: Checks for available updates from https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+    -   **Auto Migration**: Runs Flask-Migrate database migrations automatically
+    -   **Dependency Update**: Automatically installs new requirements
+    -   **Git Integration**: Pull updates from specified branch (default: main)
+    -   **Update History**: Tracks all update attempts with detailed logs
+    -   **Rollback Support**: Ability to rollback to previous commits
+    -   **Pre-Update Backup**: Creates automatic backup before updating
+    -   Service located in `app/services/updater.py`
+    -   API endpoints: `/api/super-admin/update/check`, `/api/super-admin/update/perform`, `/api/super-admin/update/history`, `/api/super-admin/update/rollback`
 
 ## External Dependencies
 -   **Database**: SQLite (default, local) or PostgreSQL (production, Replit).
