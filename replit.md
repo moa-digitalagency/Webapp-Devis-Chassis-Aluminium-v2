@@ -42,4 +42,18 @@ The application uses an Application Factory pattern with Flask and modular bluep
 ## Installation Support
 -   **Windows**: Fully supported with winget-based installation (Python 3.11, Git, SQLite). Complete instructions in README.md.
 -   **Linux/Mac**: Standard Python venv workflow with SQLite or PostgreSQL.
--   **Replit**: Native PostgreSQL database support with automatic configuration.
+-   **Replit**: Native PostgreSQL database support with automatic configuration. The application is fully configured and ready to run on Replit with:
+    -   PostgreSQL database (automatically connected via DATABASE_URL environment variable)
+    -   All Python dependencies installed (Flask, SQLAlchemy, ReportLab, etc.)
+    -   Flask workflow configured to run on port 5000
+    -   Production deployment configured with Gunicorn for autoscaling
+    -   Database auto-initialization on first run with default super admin credentials
+
+## Replit Environment Setup (Completed)
+-   **Database**: PostgreSQL database created and configured
+-   **Python**: Python 3.11 with all required packages installed
+-   **Workflow**: Flask App running on port 5000 (development mode)
+-   **Deployment**: Configured for autoscale deployment with Gunicorn
+-   **Default Credentials**: 
+    -   Super Admin: `superadmin` / `admin123`
+    -   Admin: `admin` / `admin123` (if created)
