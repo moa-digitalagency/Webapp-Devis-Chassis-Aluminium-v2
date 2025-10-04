@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Application de devis châssis aluminium">
+    <meta name="theme-color" content="#3B82F6">
+    <title>Devis Châssis Aluminium</title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="/static/css/styles.css?v=20251003i">
+    <link rel="icon" type="image/png" href="/icon-192.png">
+</head>
+<body class="with-pattern">
+    <div class="app-container">
+        <header class="modern-header">
+            <div class="header-left">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/>
+                    <path d="M14 2v6h6"/>
+                </svg>
+                <h1>📝 Nouveau Devis</h1>
+            </div>
+            <div class="header-right">
+                <button id="dashboardBtn" class="btn-secondary">
+                    📊 Dashboard
+                </button>
+                <button id="profileBtn" class="btn-secondary">
+                    👤 Profil
+                </button>
+                <button id="settingsBtn" class="btn-secondary">
+                    ⚙️ Paramètres
+                </button>
+                <button id="logoutBtn" class="btn-secondary">
+                    🚪 Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <div class="step-indicator-container">
+            <div class="step-indicator-horizontal" id="stepIndicator">
+                <div class="step-item active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Produit</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Dimensions</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Profilé</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="4">
+                    <div class="step-circle">4</div>
+                    <div class="step-label">Vitrage</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="5">
+                    <div class="step-circle">5</div>
+                    <div class="step-label">Accessoires</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="6">
+                    <div class="step-circle">6</div>
+                    <div class="step-label">Finition</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="7">
+                    <div class="step-circle">7</div>
+                    <div class="step-label">Client</div>
+                </div>
+                <div class="step-line"></div>
+                <div class="step-item" data-step="8">
+                    <div class="step-circle">8</div>
+                    <div class="step-label">Résumé</div>
+                </div>
+            </div>
+        </div>
+
+        <main id="mainContent">
+            <div class="step active" id="step1">
+                <h2 class="step-title">Sélectionnez votre produit</h2>
+                <p class="step-subtitle">Choisissez le type de châssis aluminium que vous souhaitez commander</p>
+                <div class="product-grid" id="chassisTypeOptions"></div>
+            </div>
+
+            <div class="step" id="step2">
+                <h2 class="step-title">Dimensions du châssis</h2>
+                <p class="step-subtitle">Indiquez les dimensions en millimètres</p>
+                <div class="dimension-info" id="dimensionLimits"></div>
+                <div class="dimension-form">
+                    <div class="form-group">
+                        <label for="height">Hauteur (mm)</label>
+                        <input type="number" id="height" min="0" step="1" placeholder="1200" required>
+                        <span class="dim-limits">Min: 100mm, Max: 3000mm</span>
+                        <span class="error-message" id="heightError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="width">Largeur (mm)</label>
+                        <input type="number" id="width" min="0" step="1" placeholder="1000" required>
+                        <span class="dim-limits">Min: 100mm, Max: 5000mm</span>
+                        <span class="error-message" id="widthError"></span>
+                    </div>
+                </div>
+                <div class="calculated-values" id="calculatedValues"></div>
+            </div>
+
+            <div class="step" id="step3">
+                <h2 class="step-title">Série de profilés</h2>
+                <p class="step-subtitle">Choisissez la série de profilés</p>
+                <div class="options-list" id="seriesOptions"></div>
+            </div>
+
+            <div class="step" id="step4">
+                <h2 class="step-title">Type de vitrage</h2>
+                <p class="step-subtitle">Sélectionnez le type de vitrage</p>
+                <div class="options-list" id="glazingOptions"></div>
+            </div>
+
+            <div class="step" id="step5">
+                <h2 class="step-title">Accessoires</h2>
+                <p class="step-subtitle">Sélectionnez les accessoires (optionnel)</p>
+                <div class="accessories-list" id="accessoriesOptions"></div>
+                <div class="incompatibility-warning" id="incompatibilityWarning"></div>
+            </div>
+
+            <div class="step" id="step6">
+                <h2 class="step-title">Finition</h2>
+                <p class="step-subtitle">Choisissez la finition souhaitée</p>
+                <div class="options-list" id="finishOptions"></div>
+            </div>
+
+            <div class="step" id="step7">
+                <h2 class="step-title">Informations client</h2>
+                <p class="step-subtitle">Renseignez vos coordonnées pour finaliser le devis</p>
+                <div class="client-form">
+                    <div class="form-group">
+                        <label for="clientName">Nom / Entreprise <span class="required">*</span></label>
+                        <input type="text" id="clientName" placeholder="Votre nom ou raison sociale" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="clientEmail">Email</label>
+                        <input type="email" id="clientEmail" placeholder="votre@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientPhone">Téléphone</label>
+                        <input type="tel" id="clientPhone" placeholder="+33 6 12 34 56 78">
+                    </div>
+                    <div class="form-group">
+                        <label for="clientNotes">Notes additionnelles</label>
+                        <textarea id="clientNotes" rows="4" placeholder="Précisions, délais souhaités, adresse de livraison..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step" id="step8">
+                <h2 class="step-title">Récapitulatif</h2>
+                
+                <!-- Liste des articles ajoutés -->
+                <div id="itemsList" class="items-list" style="display: none;">
+                    <h3 class="items-list-title">Articles dans le devis (<span id="itemsCount">0</span>)</h3>
+                    <div id="itemsContainer"></div>
+                </div>
+                
+                <!-- Article en cours -->
+                <div id="currentItem" class="current-item">
+                    <h3 class="current-item-title">Article en cours</h3>
+                    <div class="summary" id="summaryContent"></div>
+                    <div class="price-breakdown" id="priceBreakdown"></div>
+                    
+                    <!-- Champ quantité -->
+                    <div class="quantity-section" id="quantitySection" style="margin-top: 1.5rem; display: none;">
+                        <div class="form-group">
+                            <label for="itemQuantity" style="font-weight: 600; font-size: 1.1rem; color: var(--text-dark);">
+                                Quantité
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 1rem; max-width: 200px;">
+                                <button type="button" id="decreaseQty" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 1.2rem;">-</button>
+                                <input type="number" id="itemQuantity" min="1" value="1" style="width: 80px; text-align: center; font-size: 1.2rem; font-weight: 600; padding: 0.5rem; border: 2px solid var(--primary); border-radius: var(--border-radius);" />
+                                <button type="button" id="increaseQty" class="btn-secondary" style="padding: 0.5rem 1rem; font-size: 1.2rem;">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="navigation">
+            <button id="cancelBtn" class="btn-secondary">Annuler</button>
+            <div style="display: flex; gap: 1rem;">
+                <button id="prevBtn" class="btn-secondary" style="display: none;">Précédent</button>
+                <button id="nextBtn" class="btn-primary">
+                    Suivant
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <button id="viewSummaryBtn" class="btn-primary" style="display: none;">
+                    Voir le résumé
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+                <button id="addItemBtn" class="btn-primary" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Ajouter cet article au devis
+                </button>
+                <button id="addAnotherBtn" class="btn-secondary" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Ajouter un autre châssis
+                </button>
+                <button id="saveQuoteBtn" class="btn-primary" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Finaliser et enregistrer le devis
+                </button>
+            </div>
+        </nav>
+
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="/static/js/app.js?v=20251003i"></script>
+</body>
+</html>

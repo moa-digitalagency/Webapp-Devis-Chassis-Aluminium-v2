@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Devis Châssis Aluminium</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=20251003d">
+</head>
+<body class="with-pattern">
+    <div class="app-container">
+        <header class="modern-header">
+            <div class="header-left">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                </svg>
+                <h1>📊 Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <button id="newQuoteBtn" class="btn-primary">
+                    📄 Nouveau Devis
+                </button>
+                <button id="profileBtn" class="btn-secondary">
+                    👤 Profil
+                </button>
+                <button id="settingsBtn" class="btn-secondary">
+                    ⚙️ Paramètres
+                </button>
+                <button id="logoutBtn" class="btn-secondary">
+                    🚪 Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <div class="dashboard-header">
+                <h2>Tableau de bord</h2>
+                <p class="dashboard-subtitle">Vue d'ensemble de votre activité</p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-emoji">📋</div>
+                    <div class="metric-content">
+                        <div class="metric-label">📋 Total Devis</div>
+                        <div class="metric-value" id="totalQuotes">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-emoji">💰</div>
+                    <div class="metric-content">
+                        <div class="metric-label">💰 Montant Total</div>
+                        <div class="metric-value" id="totalAmount">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-emoji">📅</div>
+                    <div class="metric-content">
+                        <div class="metric-label">📅 Ce mois</div>
+                        <div class="metric-value" id="monthQuotes">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-emoji">💵</div>
+                    <div class="metric-content">
+                        <div class="metric-label">💵 Montant Ce Mois</div>
+                        <div class="metric-value" id="monthAmount">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #F3E5F5;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9C27B0" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-label">Cette Semaine</div>
+                        <div class="metric-value" id="weekQuotes">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #FCE4EC;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E91E63" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-label">Montant Cette Semaine</div>
+                        <div class="metric-value" id="weekAmount">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #E1F5FE;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#03A9F4" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-label">Total Châssis</div>
+                        <div class="metric-value" id="totalItems">-</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background: #E0F2F1;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#009688" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                    </div>
+                    <div class="metric-content">
+                        <div class="metric-label">Client Top</div>
+                        <div class="metric-value" id="topClient" style="font-size: 1.2rem;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-quotes-section">
+                <div class="section-header">
+                    <h3>Devis récents</h3>
+                    <button id="refreshBtn" class="btn-secondary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                        </svg>
+                        Actualiser
+                    </button>
+                </div>
+
+                <div id="quotesTable" class="quotes-table">
+                    <div class="loading">Chargement...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/js/dashboard.js?v=20251003j"></script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+category,subcategory,unit,price,coefficient
+Simple vitrage,,m2,45.00,1.0
+Double vitrage,,m2,85.00,1.0
+Double vitrage renforcé,,m2,110.00,1.0
+Triple vitrage,,m2,145.00,1.0
+Vitrage sécurité,,m2,165.00,1.0
+Série Confort,,ml,35.00,1.0
+Série Élégance,,ml,48.00,1.0
+Série Performance,,ml,55.00,1.0
+Série Sécurité,,ml,62.00,1.0
+labor,,unit,80.00,1.0

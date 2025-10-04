@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logs d'Activité - Super Admin</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/tailwind.css">
+</head>
+<body class="with-pattern">
+    <div class="container">
+        <header class="modern-header">
+            <div class="header-left">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                <h1>📋 Logs d'Activité</h1>
+            </div>
+            <div class="header-right">
+                <a href="/super-admin.html" class="btn-secondary">← Retour au Dashboard</a>
+                <button class="btn-secondary" id="logoutBtn">🚪 Déconnexion</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h3>📋 Logs d'Activité Système</h3>
+                <div class="table-container">
+                    <table id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Heure</th>
+                                <th>Utilisateur</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Chargement...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button class="btn-secondary" id="prevPage" disabled>← Précédent</button>
+                    <span id="pageInfo">Page 1</span>
+                    <button class="btn-secondary" id="nextPage">Suivant →</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+
+        async function checkAuth() {
+            const response = await fetch('/api/auth/check');
+            const data = await response.json();
+            if (!data.authenticated || data.role !== 'super_admin') {
+                window.location.href = '/login.html';
+            }
+        }
+
+        async function loadActivityLogs(page) {
+            try {
+                const response = await fetch(`/api/super-admin/activity-logs?page=${page}&per_page=50`);
+                const data = await response.json();
+                
+                const tbody = document.getElementById('logsTableBody');
+                if (data.logs && data.logs.length > 0) {
+                    tbody.innerHTML = data.logs.map(log => `
+                        <tr>
+                            <td>${new Date(log.created_at).toLocaleString('fr-FR')}</td>
+                            <td>${log.username || 'Système'}</td>
+                            <td>${log.action}</td>
+                            <td>${log.description}</td>
+                            <td>${log.ip_address || '-'}</td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Aucun log disponible</td></tr>';
+                }
+                
+                currentPage = page;
+                document.getElementById('pageInfo').textContent = `Page ${page} sur ${data.pages}`;
+                document.getElementById('prevPage').disabled = page === 1;
+                document.getElementById('nextPage').disabled = page >= data.pages;
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (currentPage > 1) {
+                loadActivityLogs(currentPage - 1);
+            }
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            loadActivityLogs(currentPage + 1);
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        });
+
+        checkAuth();
+        loadActivityLogs(1);
+    </script>
+</body>
+</html>

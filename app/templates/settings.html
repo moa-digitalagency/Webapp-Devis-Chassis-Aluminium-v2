@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres - Devis Châssis Aluminium</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=20251003h">
+    <link rel="icon" type="image/png" href="/icon-192.png">
+</head>
+<body class="with-pattern">
+    <div class="app-container">
+        <header class="modern-header">
+            <div class="header-left">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v6m0 6v6M5.64 5.64l4.24 4.24m4.24 4.24l4.24 4.24M1 12h6m6 0h6M5.64 18.36l4.24-4.24m4.24-4.24l4.24-4.24"/>
+                </svg>
+                <h1>⚙️ Paramètres</h1>
+            </div>
+            <div class="header-right">
+                <button id="backBtn" class="btn-secondary">
+                    ← Retour
+                </button>
+                <button id="logoutBtn" class="btn-secondary">
+                    🚪 Déconnexion
+                </button>
+            </div>
+        </header>
+
+        <div class="settings-layout">
+            <nav class="settings-sidebar">
+                <div class="settings-menu">
+                    <button class="settings-menu-item active" data-section="company">Logo & Identité</button>
+                    <button class="settings-menu-item" data-section="quote">Numérotation Devis</button>
+                    <button class="settings-menu-item" data-section="pdf">Modèle PDF</button>
+                    <button class="settings-menu-item" data-section="currency">Devise & Formatage</button>
+                    <button class="settings-menu-item" data-section="tax">TVA & Fiscalité</button>
+                    <button class="settings-menu-item" data-section="discount">Remises</button>
+                    <button class="settings-menu-item" data-section="labor">Main d'œuvre</button>
+                    <button class="settings-menu-item" data-section="catalog">Catalogue Produits</button>
+                    <button class="settings-menu-item" data-section="import">Import/Export CSV</button>
+                    <button class="settings-menu-item" data-section="users">Utilisateurs & Accès</button>
+                    <button class="settings-menu-item" data-section="theme">Apparence</button>
+                    <button class="settings-menu-item" data-section="about">À propos</button>
+                </div>
+            </nav>
+
+            <main class="settings-content" id="settingsContent">
+                <!-- Content will be loaded dynamically -->
+            </main>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/settings.js?v=20251003h"></script>
+</body>
+</html>

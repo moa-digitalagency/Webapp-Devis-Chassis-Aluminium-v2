@@ -1,0 +1,73 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Flask
+instance/
+.webassets-cache
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Node.js (BLOCKED - Python only project)
+node_modules/
+package.json
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn
+
+# Replit
+.replit
+.breakpoints
+.upm/
+.config/
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+.cache/
+tmp/
+temp/
+
+# Database backups
+*.sql.backup
+*.db.backup
+
+# Tailwind CSS binary (116MB - too large for Git)
+tailwindcss
+tailwindcss-*

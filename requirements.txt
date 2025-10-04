@@ -1,0 +1,24 @@
+# Flask Web Framework
+Flask==3.1.2
+Werkzeug==3.1.3
+
+# Database
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.1.0
+psycopg2-binary==2.9.10
+
+# Security & Encryption
+cryptography==46.0.2
+
+# PDF Generation
+reportlab==4.4.4
+Pillow==11.1.0
+
+# HTTP Requests (for SendGrid integration)
+requests==2.32.5
+
+# Environment Variables
+python-dotenv==1.1.1
+
+# CORS Support
+Flask-Cors==5.0.0

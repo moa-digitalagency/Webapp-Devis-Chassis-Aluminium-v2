@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin - PWA Devis Menuiserie</title>
+    <link rel="stylesheet" href="/static/css/styles.css?v=20251004">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+            caches.keys().then(function(names) {
+                for (let name of names) caches.delete(name);
+            });
+        }
+    </script>
+</head>
+<body class="with-pattern">
+    <div class="container">
+        <header class="modern-header">
+            <div class="header-left">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                <h1>🏢 Super Admin Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <span id="welcomeText" style="margin-right: 1rem; color: #666;"></span>
+                <button class="btn-primary" id="addCompanyBtn">🏢 Ajouter Entreprise</button>
+                <button class="hamburger-btn" id="hamburgerBtn">
+                    <div class="hamburger-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span class="hamburger-text">Menu</span>
+                </button>
+                <button class="btn-secondary" id="logoutBtn">🚪 Déconnexion</button>
+            </div>
+        </header>
+
+        <!-- Sidebar Menu -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>⚙️ Menu</h2>
+                <button class="close-btn" id="closeSidebar">✕</button>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-item" data-section="profile">
+                    <span class="nav-icon">👤</span>
+                    <span class="nav-text">Profil</span>
+                </div>
+                <div class="nav-item" data-section="app-settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Paramètres Application</span>
+                </div>
+                <div class="nav-item" data-section="activity-logs">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Logs d'Activité</span>
+                </div>
+            </nav>
+        </div>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Sidebar Sections -->
+        <div id="section-profile" class="sidebar-section">
+            <div class="sidebar-section-content">
+                <h2>👤 Mon Profil</h2>
+                <div class="settings-form">
+                    <div class="form-group">
+                        <label>Nom d'utilisateur</label>
+                        <input type="text" id="profileUsername" readonly style="background: #f5f5f5;">
+                    </div>
+                    <div class="form-group">
+                        <label>Nom complet</label>
+                        <input type="text" id="profileFullName">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="profileEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                        <input type="password" id="profilePassword">
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" id="saveProfile">💾 Sauvegarder</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-app-settings" class="sidebar-section">
+            <div class="sidebar-section-content">
+                <h2>⚙️ Paramètres Application</h2>
+                <div class="settings-form">
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">📱 Informations Application</h4>
+                    <div class="form-group">
+                        <label>Nom de l'application</label>
+                        <input type="text" id="appName" placeholder="PWA Devis Menuiserie">
+                    </div>
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="appVersion" placeholder="1.0.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="appDescription" rows="3" placeholder="Description de l'application"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Repository GitHub</label>
+                        <input type="text" id="githubRepo" placeholder="https://github.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="autoUpdateEnabled">
+                            Activer les mises à jour automatiques depuis GitHub
+                        </label>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">✏️ Personnalisation Textes (White-Label)</h4>
+                    <div class="form-group">
+                        <label>Titre Principal Application</label>
+                        <input type="text" id="appTitle" placeholder="Devis Châssis Aluminium">
+                        <small style="color: #666;">Titre affiché dans toute l'application</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre Dashboard</label>
+                        <input type="text" id="dashboardTitle" placeholder="Dashboard">
+                        <small style="color: #666;">Titre de la page tableau de bord</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre Page Devis</label>
+                        <input type="text" id="quoteTitle" placeholder="Nouveau Devis">
+                        <small style="color: #666;">Titre de la page de création de devis</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre Page Connexion</label>
+                        <input type="text" id="loginTitle" placeholder="Connexion">
+                        <small style="color: #666;">Titre de la page de connexion</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Message de Bienvenue</label>
+                        <input type="text" id="welcomeMessage" placeholder="Bienvenue !">
+                        <small style="color: #666;">Message affiché à la connexion</small>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">📧 Configuration Email (SendGrid)</h4>
+                    <div class="form-group">
+                        <label>Nom de l'expéditeur</label>
+                        <input type="text" id="sendgridFromName" placeholder="Devis Menuiserie">
+                        <small style="color: #666;">Nom affiché comme expéditeur des emails</small>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">🌍 Gestion des Langues</h4>
+                    <div class="form-group">
+                        <label>Langues disponibles</label>
+                        <div id="availableLanguages" style="margin-bottom: 1rem;">
+                            <p style="color: #666; font-size: 14px;">Chargement...</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ajouter une nouvelle langue</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="file" id="languageFileInput" accept=".json" style="flex: 1;">
+                            <button class="btn-secondary" id="uploadLanguageBtn">📤 Uploader</button>
+                        </div>
+                        <small style="color: #666; display: block; margin-top: 8px;">
+                            📄 Uploadez un fichier JSON avec les traductions. Le fichier doit contenir un champ "language_code" (ex: "es", "ar").
+                        </small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn-primary" id="saveAppSettings">💾 Sauvegarder tous les paramètres</button>
+                        <button class="btn-secondary" id="checkUpdates">🔄 Vérifier les mises à jour</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-activity-logs" class="sidebar-section">
+            <div class="sidebar-section-content">
+                <h2>📋 Logs d'Activité</h2>
+                <div class="table-container">
+                    <table id="logsTable">
+                        <thead>
+                            <tr>
+                                <th>Date/Heure</th>
+                                <th>Utilisateur</th>
+                                <th>Action</th>
+                                <th>Description</th>
+                                <th>IP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logsTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">Chargement...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button class="btn-secondary" id="prevPage" disabled>← Précédent</button>
+                    <span id="pageInfo">Page 1</span>
+                    <button class="btn-secondary" id="nextPage">Suivant →</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card stat-blue">
+                <div class="stat-icon">🏢</div>
+                <h3>Entreprises Totales</h3>
+                <p class="stat-value" id="totalCompanies">-</p>
+            </div>
+            <div class="stat-card stat-green">
+                <div class="stat-icon">✅</div>
+                <h3>Entreprises Actives</h3>
+                <p class="stat-value" id="activeCompanies">-</p>
+            </div>
+            <div class="stat-card stat-orange">
+                <div class="stat-icon">⏳</div>
+                <h3>En Attente</h3>
+                <p class="stat-value" id="pendingCompanies">-</p>
+            </div>
+            <div class="stat-card stat-red">
+                <div class="stat-icon">⛔</div>
+                <h3>Suspendues</h3>
+                <p class="stat-value" id="suspendedCompanies">-</p>
+            </div>
+            <div class="stat-card stat-purple">
+                <div class="stat-icon">👥</div>
+                <h3>Utilisateurs Totaux</h3>
+                <p class="stat-value" id="totalUsers">-</p>
+            </div>
+            <div class="stat-card stat-indigo">
+                <div class="stat-icon">👤</div>
+                <h3>Administrateurs</h3>
+                <p class="stat-value" id="totalAdmins">-</p>
+            </div>
+            <div class="stat-card stat-teal">
+                <div class="stat-icon">📋</div>
+                <h3>Devis Totaux</h3>
+                <p class="stat-value" id="totalQuotes">-</p>
+            </div>
+            <div class="stat-card stat-cyan">
+                <div class="stat-icon">💰</div>
+                <h3>Montant Total</h3>
+                <p class="stat-value stat-amount" id="totalAmount">-</p>
+            </div>
+            <div class="stat-card stat-lime">
+                <div class="stat-icon">📅</div>
+                <h3>Devis ce Mois</h3>
+                <p class="stat-value" id="monthQuotes">-</p>
+            </div>
+            <div class="stat-card stat-amber">
+                <div class="stat-icon">💵</div>
+                <h3>Montant ce Mois</h3>
+                <p class="stat-value stat-amount" id="monthAmount">-</p>
+            </div>
+            <div class="stat-card stat-pink">
+                <div class="stat-icon">📊</div>
+                <h3>Devis cette Semaine</h3>
+                <p class="stat-value" id="weekQuotes">-</p>
+            </div>
+            <div class="stat-card stat-rose">
+                <div class="stat-icon">💸</div>
+                <h3>Montant Semaine</h3>
+                <p class="stat-value stat-amount" id="weekAmount">-</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>🏢 Gestion des Entreprises</h2>
+            
+            <div class="filter-buttons">
+                <button class="btn-secondary active" data-filter="all">Toutes</button>
+                <button class="btn-secondary" data-filter="approved">Actives</button>
+                <button class="btn-secondary" data-filter="pending">En attente</button>
+                <button class="btn-secondary" data-filter="suspended">Suspendues</button>
+                <button class="btn-secondary" data-filter="rejected">Rejetées</button>
+            </div>
+
+            <div class="table-container">
+                <table id="companiesTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Statut</th>
+                            <th>Admins</th>
+                            <th>Utilisateurs</th>
+                            <th>Devis</th>
+                            <th>Date Création</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="companiesTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center;">Chargement...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter Entreprise -->
+    <div id="addCompanyModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>🏢 Ajouter une Entreprise</h2>
+                <button class="modal-close" id="closeAddCompanyModal">&times;</button>
+            </div>
+            <form id="addCompanyForm">
+                <div class="form-steps">
+                    <div class="step-indicator">
+                        <div class="step active" data-step="1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Entreprise</div>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step" data-step="2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Administrateur</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 1: Informations Entreprise -->
+                <div id="step1" class="form-step active">
+                    <h3>Informations de l'Entreprise</h3>
+                    <div class="form-group">
+                        <label>Nom de l'entreprise *</label>
+                        <input type="text" id="companyName" required placeholder="Ex: Menuiserie Aluminium Pro">
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse</label>
+                        <input type="text" id="companyAddress" placeholder="Ex: 123 Rue Mohammed V, Casablanca">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Téléphone</label>
+                            <input type="tel" id="companyPhone" placeholder="Ex: 0522-123456">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="companyEmail" placeholder="Ex: contact@entreprise.ma">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>ICE (Identifiant Commun de l'Entreprise)</label>
+                        <input type="text" id="companyICE" placeholder="Ex: 001234567890000">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="nextToStep2">Suivant →</button>
+                        <button type="button" class="btn-secondary" id="cancelAddCompanyBtn">Annuler</button>
+                    </div>
+                </div>
+
+                <!-- Étape 2: Administrateur -->
+                <div id="step2" class="form-step">
+                    <h3>Compte Administrateur</h3>
+                    <p class="step-description">Créez le premier administrateur pour cette entreprise</p>
+                    <div class="form-group">
+                        <label>Nom d'utilisateur *</label>
+                        <input type="text" id="adminUsername" required placeholder="Ex: admin">
+                    </div>
+                    <div class="form-group">
+                        <label>Nom complet *</label>
+                        <input type="text" id="adminFullName" required placeholder="Ex: Ahmed Bennani">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="adminEmail" required placeholder="Ex: admin@entreprise.ma">
+                    </div>
+                    <div class="form-group">
+                        <label>Mot de passe *</label>
+                        <input type="password" id="adminPassword" required minlength="6" placeholder="Minimum 6 caractères">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">✓ Créer Entreprise</button>
+                        <button type="button" class="btn-secondary" id="backToStep1">← Retour</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const timestamp = new Date().getTime();
+        const script = document.createElement('script');
+        script.src = '/static/js/super_admin.js?nocache=' + timestamp;
+        script.onerror = function() { alert('Erreur de chargement du script'); };
+        document.body.appendChild(script);
+    </script>
+</body>
+</html>

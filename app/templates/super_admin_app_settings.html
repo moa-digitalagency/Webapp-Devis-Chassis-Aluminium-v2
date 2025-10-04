@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paramètres Application - Super Admin</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link rel="stylesheet" href="/static/css/tailwind.css">
+</head>
+<body class="with-pattern">
+    <div class="container">
+        <header class="modern-header">
+            <div class="header-left">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                <h1>⚙️ Paramètres Application</h1>
+            </div>
+            <div class="header-right">
+                <a href="/super-admin.html" class="btn-secondary">← Retour au Dashboard</a>
+                <button class="btn-secondary" id="logoutBtn">🚪 Déconnexion</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="card">
+                <h3>⚙️ Paramètres SAAS - Configuration Complète</h3>
+                <div class="settings-form">
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">📱 Informations Application</h4>
+                    <div class="form-group">
+                        <label>Nom de l'application</label>
+                        <input type="text" id="appName" placeholder="PWA Devis Menuiserie">
+                    </div>
+                    <div class="form-group">
+                        <label>Version</label>
+                        <input type="text" id="appVersion" placeholder="1.0.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="appDescription" rows="3" placeholder="Description de l'application"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Repository GitHub</label>
+                        <input type="text" id="githubRepo" placeholder="https://github.com/...">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="autoUpdateEnabled">
+                            Activer les mises à jour automatiques depuis GitHub
+                        </label>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">✏️ Personnalisation Textes (White-Label)</h4>
+                    <div class="form-group">
+                        <label>Titre Principal Application</label>
+                        <input type="text" id="appTitle" placeholder="Devis Châssis Aluminium">
+                        <small style="color: #666;">Titre affiché dans toute l'application</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre Dashboard</label>
+                        <input type="text" id="dashboardTitle" placeholder="Dashboard">
+                        <small style="color: #666;">Titre de la page tableau de bord</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre Page Devis</label>
+                        <input type="text" id="quoteTitle" placeholder="Nouveau Devis">
+                        <small style="color: #666;">Titre de la page de création de devis</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Titre Page Connexion</label>
+                        <input type="text" id="loginTitle" placeholder="Connexion">
+                        <small style="color: #666;">Titre de la page de connexion</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Message de Bienvenue</label>
+                        <input type="text" id="welcomeMessage" placeholder="Bienvenue !">
+                        <small style="color: #666;">Message affiché à la connexion</small>
+                    </div>
+                    
+                    <h4 style="margin-top: 1.5rem; margin-bottom: 1rem; color: #3B82F6;">📧 Configuration Email (SendGrid)</h4>
+                    <div class="form-group">
+                        <label>Nom de l'expéditeur</label>
+                        <input type="text" id="sendgridFromName" placeholder="Devis Menuiserie">
+                        <small style="color: #666;">Nom affiché comme expéditeur des emails</small>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn-primary" id="saveAppSettings">💾 Sauvegarder tous les paramètres</button>
+                        <button class="btn-secondary" id="checkUpdates">🔄 Vérifier les mises à jour</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/super_admin.js"></script>
+    <script>
+        async function checkAuth() {
+            const response = await fetch('/api/auth/check');
+            const data = await response.json();
+            if (!data.authenticated || data.role !== 'super_admin') {
+                window.location.href = '/login.html';
+            }
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('/api/auth/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        });
+
+        checkAuth();
+    </script>
+</body>
+</html>
