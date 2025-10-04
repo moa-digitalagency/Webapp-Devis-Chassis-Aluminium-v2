@@ -420,16 +420,83 @@ async function sendQuoteByEmail(quoteId) {
     }
 }
 
+// Sidebar Management
+function openSidebar() {
+    document.getElementById('sidebar').classList.add('active');
+    document.getElementById('sidebarOverlay').classList.add('active');
+}
+
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+function openSidebarSection(sectionId) {
+    closeSidebar();
+    document.querySelectorAll('.sidebar-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById(`section-${sectionId}`).classList.add('active');
+    document.getElementById('sidebarOverlay').classList.add('active');
+}
+
+function closeSidebarSection() {
+    document.querySelectorAll('.sidebar-section').forEach(section => {
+        section.classList.remove('active');
+    });
+    document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+// Load Profile Data
+async function loadProfileData() {
+    try {
+        const response = await fetch('/api/users/me', { credentials: 'include' });
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById('profileUsername').value = user.username || '';
+            document.getElementById('profileFullName').value = user.full_name || '';
+            document.getElementById('profileEmail').value = user.email || '';
+        }
+    } catch (error) {
+        console.error('Error loading profile:', error);
+    }
+}
+
+// Save Profile
+async function saveProfile() {
+    const fullName = document.getElementById('profileFullName').value;
+    const email = document.getElementById('profileEmail').value;
+    const password = document.getElementById('profilePassword').value;
+    
+    const data = { full_name: fullName, email: email };
+    if (password) {
+        data.password = password;
+    }
+    
+    try {
+        const response = await fetch('/api/users/me', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            showToast('Profil mis à jour avec succès', 'success');
+            document.getElementById('profilePassword').value = '';
+        } else {
+            const error = await response.json();
+            showToast(error.error || 'Erreur lors de la mise à jour', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving profile:', error);
+        showToast('Erreur lors de la mise à jour du profil', 'error');
+    }
+}
+
+// Event Listeners
 document.getElementById('newQuoteBtn').addEventListener('click', () => {
     window.location.href = '/quote.html';
-});
-
-document.getElementById('profileBtn').addEventListener('click', () => {
-    window.location.href = '/profile.html';
-});
-
-document.getElementById('settingsBtn').addEventListener('click', () => {
-    window.location.href = '/settings.html';
 });
 
 document.getElementById('refreshBtn').addEventListener('click', () => {
@@ -445,6 +512,28 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
         window.location.href = '/login.html';
     }
 });
+
+// Hamburger Menu
+document.getElementById('hamburgerBtn').addEventListener('click', openSidebar);
+document.getElementById('closeSidebar').addEventListener('click', closeSidebar);
+document.getElementById('sidebarOverlay').addEventListener('click', () => {
+    closeSidebar();
+    closeSidebarSection();
+});
+
+// Nav Items
+document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const section = item.getAttribute('data-section');
+        openSidebarSection(section);
+        if (section === 'profile') {
+            loadProfileData();
+        }
+    });
+});
+
+// Save Profile Button
+document.getElementById('saveProfile').addEventListener('click', saveProfile);
 
 async function init() {
     if (await checkAuth()) {
