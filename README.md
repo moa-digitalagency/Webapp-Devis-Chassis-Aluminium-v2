@@ -63,6 +63,43 @@ Une Progressive Web App (PWA) multi-tenant SaaS pour la génération de devis de
 - SQLite (inclus avec Python) ou PostgreSQL 13+ (optionnel pour production)
 - Compte SendGrid (optionnel - pour l'envoi d'emails)
 
+## ⚡ Installation Automatique (Recommandé)
+
+### Installation en 1 commande avec credentials auto-générés
+
+**Ces scripts installent TOUT automatiquement et génèrent des credentials sécurisés uniques.**
+
+#### 🐧 Linux / VPS (Ubuntu, Debian, CentOS, RHEL, Fedora)
+```bash
+curl -fsSL https://raw.githubusercontent.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2/main/install-auto.sh | sudo bash
+```
+✅ **Installe** : Python 3.11, PostgreSQL, Nginx, SSL, Service systemd  
+✅ **Temps** : ~5 minutes  
+✅ **Credentials** : Sauvegardés dans `/root/.devisapp_credentials`
+
+#### 🪟 Windows 10/11
+Ouvrir **PowerShell en tant qu'Administrateur** :
+```powershell
+irm https://raw.githubusercontent.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2/main/install-auto-windows.ps1 | iex
+```
+✅ **Installe** : Python, Git, Service Windows, NSSM  
+✅ **Temps** : ~3 minutes  
+✅ **Credentials** : Sauvegardés sur le Bureau
+
+#### 🍎 macOS
+```bash
+curl -fsSL https://raw.githubusercontent.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2/main/install-auto-macos.sh | bash
+```
+✅ **Installe** : Python (via Homebrew), Service LaunchAgent  
+✅ **Temps** : ~3 minutes  
+✅ **Credentials** : Sauvegardés sur le Bureau
+
+---
+
+**🔐 Sécurité** : Les credentials sont générés aléatoirement à chaque installation et sauvegardés dans un fichier sécurisé uniquement accessible à vous.
+
+---
+
 ## 🚀 Installation locale (Windows 10/11)
 
 ### Méthode rapide avec winget
