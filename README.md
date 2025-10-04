@@ -74,8 +74,8 @@ Ouvrez **PowerShell** et exécutez :
 winget install Python.Python.3.11 Git.Git
 
 # Redémarrer le terminal, puis :
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -89,8 +89,8 @@ python main.py
 3. **Cloner et démarrer** :
 
 ```powershell
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
@@ -123,8 +123,8 @@ sudo apt install -y python3 python3-venv python3-pip git
 # sudo apt install python3.11 python3.11-venv -y
 
 # Cloner le projet
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 
 # Créer l'environnement virtuel (utilisez python3.11 si installé, sinon python3)
 python3 -m venv .venv
@@ -147,8 +147,8 @@ sudo dnf install -y python3 python3-pip git
 # sudo dnf install python3.11 python3.11-pip -y
 
 # Cloner le projet
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 
 # Créer l'environnement virtuel
 python3 -m venv .venv
@@ -172,8 +172,8 @@ L'application sera accessible sur `http://localhost:5000`
 brew install python@3.11 git
 
 # Cloner le projet
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 
 # Créer l'environnement virtuel
 python3.11 -m venv .venv
@@ -225,8 +225,8 @@ sudo useradd -m -s /bin/bash devisapp
 sudo su - devisapp
 
 # 5. Cloner le projet
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 
 # 6. Créer l'environnement virtuel
 python3.11 -m venv .venv
@@ -266,9 +266,9 @@ After=network.target
 [Service]
 User=devisapp
 Group=devisapp
-WorkingDirectory=/home/devisapp/Webapp-Devis-Chassis-Aluminium
-Environment="PATH=/home/devisapp/Webapp-Devis-Chassis-Aluminium/.venv/bin"
-ExecStart=/home/devisapp/Webapp-Devis-Chassis-Aluminium/.venv/bin/gunicorn -w 4 -b 127.0.0.1:5000 --reuse-port main:app
+WorkingDirectory=/home/devisapp/Webapp-Devis-Chassis-Aluminium-v2
+Environment="PATH=/home/devisapp/Webapp-Devis-Chassis-Aluminium-v2/.venv/bin"
+ExecStart=/home/devisapp/Webapp-Devis-Chassis-Aluminium-v2/.venv/bin/gunicorn -w 4 -b 127.0.0.1:5000 --reuse-port main:app
 
 [Install]
 WantedBy=multi-user.target
@@ -294,7 +294,7 @@ server {
     }
 
     location /static {
-        alias /home/devisapp/Webapp-Devis-Chassis-Aluminium/app/static;
+        alias /home/devisapp/Webapp-Devis-Chassis-Aluminium-v2/app/static;
     }
 }
 ```
@@ -333,8 +333,8 @@ sudo certbot --nginx -d votre-domaine.com
 
 # 3. Cloner le projet
 cd C:\inetpub
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 
 # 4. Créer l'environnement virtuel
 python -m venv .venv
@@ -353,9 +353,9 @@ FLASK_ENV=production
 
 # 7. Créer un service Windows avec NSSM
 # Télécharger NSSM depuis nssm.cc
-nssm install DevisApp "C:\inetpub\Webapp-Devis-Chassis-Aluminium\.venv\Scripts\python.exe"
+nssm install DevisApp "C:\inetpub\Webapp-Devis-Chassis-Aluminium-v2\.venv\Scripts\python.exe"
 nssm set DevisApp AppParameters "-m waitress --port=5000 main:app"
-nssm set DevisApp AppDirectory "C:\inetpub\Webapp-Devis-Chassis-Aluminium"
+nssm set DevisApp AppDirectory "C:\inetpub\Webapp-Devis-Chassis-Aluminium-v2"
 nssm set DevisApp DisplayName "PWA Devis Menuiserie"
 nssm set DevisApp Description "Application de devis menuiserie aluminium"
 nssm set DevisApp Start SERVICE_AUTO_START
@@ -386,8 +386,8 @@ ssh votre_user@votre-serveur.com
 cd ~/public_html  # ou cd ~/subdomains/app/public_html
 
 # 3. Cloner le projet
-git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium
-cd Webapp-Devis-Chassis-Aluminium
+git clone https://github.com/moa-digitalagency/Webapp-Devis-Chassis-Aluminium-v2
+cd Webapp-Devis-Chassis-Aluminium-v2
 
 # 4. Créer l'environnement virtuel (via cPanel Python App ou manuellement)
 virtualenv --python=python3.11 venv
@@ -413,7 +413,7 @@ import sys
 import os
 
 # Ajouter le chemin de l'application
-INTERP = os.path.join(os.environ['HOME'], 'public_html', 'Webapp-Devis-Chassis-Aluminium', 'venv', 'bin', 'python3')
+INTERP = os.path.join(os.environ['HOME'], 'public_html', 'Webapp-Devis-Chassis-Aluminium-v2', 'venv', 'bin', 'python3')
 if sys.executable != INTERP:
     os.execl(INTERP, INTERP, *sys.argv)
 
@@ -431,7 +431,7 @@ EOF
 ### Configuration dans cPanel
 
 1. **Setup Python App** (si disponible) :
-   - Application root : `/home/user/public_html/Webapp-Devis-Chassis-Aluminium`
+   - Application root : `/home/user/public_html/Webapp-Devis-Chassis-Aluminium-v2`
    - Application URL : `/` ou votre sous-domaine
    - Python version : 3.11
    - Application startup file : `passenger_wsgi.py`
@@ -443,7 +443,7 @@ EOF
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /Webapp-Devis-Chassis-Aluminium/passenger_wsgi.py/$1 [QSA,L]
+RewriteRule ^(.*)$ /Webapp-Devis-Chassis-Aluminium-v2/passenger_wsgi.py/$1 [QSA,L]
 ```
 
 3. **Redémarrer l'application** via cPanel Python App
