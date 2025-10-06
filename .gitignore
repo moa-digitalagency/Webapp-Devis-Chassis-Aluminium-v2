@@ -74,3 +74,17 @@ temp/
 # Tailwind CSS binary (116MB - too large for Git)
 tailwindcss
 tailwindcss-*
+
+# Deployment and installation files
+DEPLOY_*.md
+install-auto*.sh
+install-auto*.ps1
+*.deployment.md
+railway.json
+Procfile
+render.yaml
+
+# Test and temporary files for Replit
+*test*.tmp
+*temp*.py
+.git.old/
