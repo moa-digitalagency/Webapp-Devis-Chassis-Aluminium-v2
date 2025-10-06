@@ -55,6 +55,9 @@ yarn-error.log*
 .breakpoints
 .upm/
 .config/
+.pythonlibs/
+.local/
+.cache/
 
 # Temporary files
 *.tmp
