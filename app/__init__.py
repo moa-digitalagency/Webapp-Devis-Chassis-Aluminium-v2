@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 import os
+import secrets
+from cryptography.fernet import Fernet
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -14,7 +16,42 @@ def create_app():
                 template_folder='templates',
                 static_folder='static')
     
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
+    secret_key = os.environ.get('SECRET_KEY')
+    if not secret_key:
+        secret_key = secrets.token_hex(32)
+        print("\n" + "="*60)
+        print("⚠️  WARNING: SECRET_KEY not found in environment!")
+        print("Generated temporary key for this session.")
+        print("Generate and add yours with:")
+        print("  python -c \"import secrets; print('SECRET_KEY=' + secrets.token_hex(32))\"")
+        print("="*60 + "\n")
+    
+    app.config['SECRET_KEY'] = secret_key
+    
+    encryption_key = os.environ.get('ENCRYPTION_KEY')
+    if not encryption_key:
+        encryption_key = Fernet.generate_key().decode()
+        print("\n" + "="*60)
+        print("⚠️  WARNING: ENCRYPTION_KEY not found in environment!")
+        print("Generated temporary key for this session.")
+        print("Generate and add yours with:")
+        print("  python -c \"from cryptography.fernet import Fernet; print('ENCRYPTION_KEY=' + Fernet.generate_key().decode())\"")
+        print("="*60 + "\n")
+    else:
+        try:
+            test_cipher = Fernet(encryption_key.encode())
+            test_cipher.encrypt(b'test')
+        except Exception as e:
+            print("\n" + "="*60)
+            print("❌ ERROR: ENCRYPTION_KEY is invalid!")
+            print(f"Error: {e}")
+            print("Generate a valid key with:")
+            print("  python -c \"from cryptography.fernet import Fernet; print('ENCRYPTION_KEY=' + Fernet.generate_key().decode())\"")
+            print("="*60 + "\n")
+            encryption_key = Fernet.generate_key().decode()
+            print(f"⚠️  Using temporary key for this session: {encryption_key}")
+    
+    os.environ['ENCRYPTION_KEY'] = encryption_key
     
     # Database configuration - SQLite for local, PostgreSQL for production
     database_url = os.environ.get('DATABASE_URL')
@@ -34,13 +71,54 @@ def create_app():
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['JSON_AS_ASCII'] = False
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    app.config['SESSION_COOKIE_SECURE'] = False
+    
+    is_production = database_url is not None
+    
+    if is_production:
+        app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+        app.config['SESSION_COOKIE_SECURE'] = True
+        app.config['SESSION_COOKIE_HTTPONLY'] = True
+    else:
+        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+        app.config['SESSION_COOKIE_SECURE'] = False
+    
     app.config['PERMANENT_SESSION_LIFETIME'] = 86400
     
     db.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
+    
+    if is_production:
+        railway_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+        allowed_origins_env = os.environ.get('ALLOWED_ORIGINS', '')
+        
+        if railway_domain and not allowed_origins_env:
+            allowed_origins = [f'https://{railway_domain}']
+            print(f"\n✅ CORS: Auto-detected Railway domain: {railway_domain}")
+        elif allowed_origins_env:
+            allowed_origins = [origin.strip() for origin in allowed_origins_env.split(',')]
+        else:
+            allowed_origins = None
+            print("\n" + "="*60)
+            print("⚠️  WARNING: No specific domain detected for CORS")
+            print("CORS will be permissive (no credentials) for compatibility")
+            print("For secure authenticated requests, set:")
+            print("  ALLOWED_ORIGINS=https://your-app.up.railway.app")
+            print("="*60 + "\n")
+        
+        if allowed_origins:
+            CORS(app, 
+                 supports_credentials=True,
+                 origins=allowed_origins,
+                 allow_headers=['Content-Type', 'Authorization'],
+                 methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+        else:
+            CORS(app,
+                 supports_credentials=False,
+                 origins='*',
+                 allow_headers=['Content-Type', 'Authorization'],
+                 methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+    else:
+        CORS(app)
     
     # Initialize i18n
     i18n.init_app(app)
