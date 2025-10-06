@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -89,20 +89,26 @@ def create_app():
     
     if is_production:
         railway_domain = os.environ.get('RAILWAY_PUBLIC_DOMAIN')
+        pythonanywhere_domain = os.environ.get('PYTHONANYWHERE_DOMAIN')
         allowed_origins_env = os.environ.get('ALLOWED_ORIGINS', '')
         
         if railway_domain and not allowed_origins_env:
             allowed_origins = [f'https://{railway_domain}']
             print(f"\n✅ CORS: Auto-detected Railway domain: {railway_domain}")
+        elif pythonanywhere_domain and not allowed_origins_env:
+            allowed_origins = [f'https://{pythonanywhere_domain}']
+            print(f"\n✅ CORS: Auto-detected PythonAnywhere domain: {pythonanywhere_domain}")
         elif allowed_origins_env:
             allowed_origins = [origin.strip() for origin in allowed_origins_env.split(',')]
         else:
             allowed_origins = None
             print("\n" + "="*60)
             print("⚠️  WARNING: No specific domain detected for CORS")
-            print("CORS will be permissive (no credentials) for compatibility")
-            print("For secure authenticated requests, set:")
+            print("Using permissive CORS with credentials support")
+            print("For better security, set one of:")
             print("  ALLOWED_ORIGINS=https://your-app.up.railway.app")
+            print("  RAILWAY_PUBLIC_DOMAIN=your-app.up.railway.app")
+            print("  PYTHONANYWHERE_DOMAIN=yourusername.pythonanywhere.com")
             print("="*60 + "\n")
         
         if allowed_origins:
@@ -113,10 +119,18 @@ def create_app():
                  methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
         else:
             CORS(app,
-                 supports_credentials=False,
+                 supports_credentials=True,
                  origins='*',
                  allow_headers=['Content-Type', 'Authorization'],
                  methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'])
+            
+            @app.after_request
+            def cors_credentials_fix(response):
+                origin = request.headers.get('Origin')
+                if origin:
+                    response.headers['Access-Control-Allow-Origin'] = origin
+                    response.headers['Access-Control-Allow-Credentials'] = 'true'
+                return response
     else:
         CORS(app)
     

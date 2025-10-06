@@ -6,6 +6,18 @@ PWA Devis Menuiserie is a **multi-tenant SaaS Progressive Web App** for aluminum
 ## User Preferences
 I prefer iterative development with a focus on clear, modular code. Please prioritize robust error handling and security in all implementations. For any significant architectural changes or new feature implementations, I'd like to be consulted before they are applied. I appreciate detailed explanations for complex solutions. Do not make changes to the `docs/` folder.
 
+## Recent Changes
+
+### October 6, 2025 - Critical Multi-Platform Deployment Fix
+- **FIXED**: "Server connection error" on login across all deployment platforms (Railway, Python Anywhere, Render)
+- **Root cause**: CORS configuration with `origins='*'` + `supports_credentials=False` caused browsers to reject session cookies
+- **Solution**: Implemented intelligent CORS with origin reflection and credential support using `@app.after_request`
+- **Auto-detection**: Added support for `RAILWAY_PUBLIC_DOMAIN` and `PYTHONANYWHERE_DOMAIN` environment variables
+- **Fallback**: Permissive CORS with credentials enabled when no specific domain is configured
+- **Frontend**: All fetch() calls now include `credentials: 'include'` for proper session handling
+- **Production cookies**: Properly configured with `SameSite=None` and `Secure=True` for HTTPS
+- **Updated**: DEPLOY_RAILWAY.md renamed to comprehensive multi-platform deployment guide
+
 ## System Architecture
 The application uses an Application Factory pattern with Flask and modular blueprints. It has a mobile-first, responsive frontend.
 

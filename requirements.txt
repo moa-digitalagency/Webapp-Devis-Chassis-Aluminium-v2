@@ -25,3 +25,14 @@ Flask-Cors==5.0.0
 
 # Production Server
 gunicorn==23.0.0
+cryptography
+flask
+flask-cors
+flask-migrate
+flask-sqlalchemy
+pillow
+psycopg2-binary
+python-dotenv
+reportlab
+requests
+werkzeug
