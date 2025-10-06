@@ -1,10 +1,62 @@
 from app import create_app, db
 from app.models import User, Company, AppSettings
 import os
+import secrets
+from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
+
+def ensure_secrets():
+    """Ensure SECRET_KEY and ENCRYPTION_KEY exist, generate if needed."""
+    env_file = '.env'
+    secret_key = os.environ.get('SECRET_KEY')
+    encryption_key = os.environ.get('ENCRYPTION_KEY')
+    
+    needs_update = False
+    env_lines = []
+    
+    # Read existing .env file if it exists
+    if os.path.exists(env_file):
+        with open(env_file, 'r') as f:
+            env_lines = f.readlines()
+    
+    # Check and generate SECRET_KEY if needed
+    if not secret_key:
+        secret_key = secrets.token_hex(32)
+        os.environ['SECRET_KEY'] = secret_key
+        needs_update = True
+        print("✅ Generated new SECRET_KEY")
+    
+    # Check and generate ENCRYPTION_KEY if needed
+    if not encryption_key:
+        encryption_key = Fernet.generate_key().decode()
+        os.environ['ENCRYPTION_KEY'] = encryption_key
+        needs_update = True
+        print("✅ Generated new ENCRYPTION_KEY")
+    
+    # Update .env file if new keys were generated
+    if needs_update:
+        # Remove old SECRET_KEY and ENCRYPTION_KEY lines if they exist
+        env_lines = [line for line in env_lines if not line.startswith('SECRET_KEY=') and not line.startswith('ENCRYPTION_KEY=')]
+        
+        # Add new keys
+        if not any(line.startswith('SECRET_KEY=') for line in env_lines):
+            env_lines.append(f'SECRET_KEY={secret_key}\n')
+        if not any(line.startswith('ENCRYPTION_KEY=') for line in env_lines):
+            env_lines.append(f'ENCRYPTION_KEY={encryption_key}\n')
+        
+        # Write to .env file
+        with open(env_file, 'w') as f:
+            f.writelines(env_lines)
+        
+        print(f"💾 Keys saved to {env_file}")
+        print("⚠️  IMPORTANT: Keep this file secure and backed up!")
+        print("⚠️  If you lose ENCRYPTION_KEY, encrypted data will be unrecoverable!\n")
+
+# Ensure secrets exist before creating app
+ensure_secrets()
 
 app = create_app()
 
