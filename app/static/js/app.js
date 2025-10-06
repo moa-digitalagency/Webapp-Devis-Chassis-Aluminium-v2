@@ -963,6 +963,7 @@ async function saveQuote() {
         
         const response = await fetch('/api/quotes', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 chassisType: `Devis multiple (${state.items.length} articles)`,

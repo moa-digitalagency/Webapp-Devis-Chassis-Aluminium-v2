@@ -716,6 +716,7 @@ async function restoreBackup(backupFile) {
     try {
         const response = await fetch('/api/super-admin/backup/restore', {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ backup_file: backupFile }),
             credentials: 'include'

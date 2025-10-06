@@ -14,7 +14,9 @@ class I18nManager {
 
     async loadAvailableLanguages() {
         try {
-            const response = await fetch('/api/languages/available');
+            const response = await fetch('/api/languages/available', {
+                credentials: 'include'
+            });
             if (response.ok) {
                 this.availableLanguages = await response.json();
             }
@@ -25,7 +27,9 @@ class I18nManager {
 
     async loadCurrentLanguage() {
         try {
-            const response = await fetch('/api/languages/current');
+            const response = await fetch('/api/languages/current', {
+                credentials: 'include'
+            });
             if (response.ok) {
                 const data = await response.json();
                 this.currentLanguage = data.code;
@@ -41,6 +45,7 @@ class I18nManager {
         try {
             const response = await fetch('/api/languages/set', {
                 method: 'POST',
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -142,6 +147,7 @@ class I18nManager {
         try {
             const response = await fetch('/api/languages/upload', {
                 method: 'POST',
+                credentials: 'include',
                 body: formData
             });
 
