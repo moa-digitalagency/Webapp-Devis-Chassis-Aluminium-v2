@@ -83,6 +83,9 @@ install-auto*.ps1
 railway.json
 Procfile
 render.yaml
+wsgi.py
+passenger_wsgi.py
+*_wsgi.py
 
 # Test and temporary files for Replit
 *test*.tmp
