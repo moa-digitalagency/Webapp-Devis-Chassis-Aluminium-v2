@@ -142,6 +142,12 @@ function renderCompanySection() {
                     <input type="number" id="maxHeight" value="${company.max_height || 3000}" data-section="company" data-key="max_height" min="100" max="10000">
                 </div>
             </div>
+            
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" onclick="saveAllSectionSettings('company')">
+                    💾 Sauvegarder les paramètres
+                </button>
+            </div>
         </div>
     `;
 }
@@ -174,6 +180,12 @@ function renderQuoteSection() {
                 <label for="quoteValidity">Validité (jours)</label>
                 <input type="number" id="quoteValidity" value="${quote.validity_days || '30'}" data-section="quote" data-key="validity_days">
             </div>
+            
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" onclick="saveAllSectionSettings('quote')">
+                    💾 Sauvegarder les paramètres
+                </button>
+            </div>
         </div>
     `;
 }
@@ -200,6 +212,12 @@ function renderPdfSection() {
             <div class="form-group">
                 <label for="pdfLegal">Mentions légales</label>
                 <textarea id="pdfLegal" rows="4" data-section="pdf" data-key="legal">${pdf.legal || ''}</textarea>
+            </div>
+            
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" onclick="saveAllSectionSettings('pdf')">
+                    💾 Sauvegarder les paramètres
+                </button>
             </div>
         </div>
     `;
@@ -241,6 +259,12 @@ function renderCurrencySection() {
                     <option value="," ${currency.thousand_separator === ',' ? 'selected' : ''}>Virgule (,)</option>
                     <option value="." ${currency.thousand_separator === '.' ? 'selected' : ''}>Point (.)</option>
                 </select>
+            </div>
+            
+            <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" onclick="saveAllSectionSettings('currency')">
+                    💾 Sauvegarder les paramètres
+                </button>
             </div>
         </div>
     `;
@@ -427,24 +451,36 @@ function renderAboutSection() {
     `;
 }
 
-function attachSectionHandlers(sectionName) {
-    const inputs = document.querySelectorAll('input[data-section], textarea[data-section], select[data-section]');
+async function saveAllSectionSettings(section) {
+    const inputs = document.querySelectorAll(`input[data-section="${section}"], textarea[data-section="${section}"], select[data-section="${section}"]`);
+    const settingsData = {};
     
     inputs.forEach(input => {
-        const handler = () => {
-            const section = input.dataset.section;
-            const key = input.dataset.key;
-            const value = input.type === 'checkbox' ? input.checked.toString() : input.value;
-            saveSetting(section, key, value);
-        };
-        
-        if (input.type === 'checkbox' || input.type === 'radio') {
-            input.addEventListener('change', handler);
-        } else {
-            input.addEventListener('blur', handler);
-        }
+        const key = input.dataset.key;
+        const value = input.type === 'checkbox' ? input.checked.toString() : input.value;
+        settingsData[key] = value;
     });
     
+    const response = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            section, 
+            settings: settingsData
+        }),
+        credentials: 'include'
+    });
+    
+    if (response.ok) {
+        if (!settings[section]) settings[section] = {};
+        Object.assign(settings[section], settingsData);
+        showToast('✅ Paramètres sauvegardés avec succès', 'success');
+    } else {
+        showToast('❌ Erreur lors de la sauvegarde', 'error');
+    }
+}
+
+function attachSectionHandlers(sectionName) {
     if (sectionName === 'users') {
         loadUsers();
     } else if (sectionName === 'catalog') {

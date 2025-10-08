@@ -5,13 +5,21 @@ async function checkAuth() {
         
         if (!data.authenticated) {
             window.location.href = '/login.html';
-            return false;
+            return null;
         }
-        return true;
+        
+        if (data.user && data.user.role === 'admin') {
+            const settingsBtn = document.getElementById('settingsBtn');
+            if (settingsBtn) {
+                settingsBtn.style.display = 'block';
+            }
+        }
+        
+        return data.user;
     } catch (error) {
         console.error('Auth check failed:', error);
         window.location.href = '/login.html';
-        return false;
+        return null;
     }
 }
 
