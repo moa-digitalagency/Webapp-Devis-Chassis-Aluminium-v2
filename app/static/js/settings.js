@@ -37,16 +37,19 @@ async function saveSetting(section, key, value) {
     const response = await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ section, key, value }),
+        body: JSON.stringify({ 
+            section, 
+            settings: { [key]: value }
+        }),
         credentials: 'include'
     });
     
     if (response.ok) {
         if (!settings[section]) settings[section] = {};
         settings[section][key] = value;
-        showToast('Paramètre sauvegardé', 'success');
+        showToast('✅ Paramètre sauvegardé', 'success');
     } else {
-        showToast('Erreur de sauvegarde', 'error');
+        showToast('❌ Erreur de sauvegarde', 'error');
     }
 }
 
